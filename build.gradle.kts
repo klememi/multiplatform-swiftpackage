@@ -16,7 +16,7 @@ plugins {
     signing
 }
 
-version = "2.2.0"
+version = "2.3.0"
 
 repositories {
     mavenCentral()
@@ -60,7 +60,7 @@ extensions.findByName("buildScan")?.withGroovyBuilder {
 gradlePlugin {
     plugins {
         create("pluginMaven") {
-            id = "io.github.luca992.multiplatform-swiftpackage"
+            id = "io.github.klememi.multiplatform-swiftpackage"
             implementationClass = "com.chromaticnoise.multiplatformswiftpackage.MultiplatformSwiftPackagePlugin"
         }
     }
@@ -70,12 +70,12 @@ publishing {
     publications {
         create<MavenPublication>("pluginMaven") {
             pom {
-                groupId = "io.github.luca992.multiplatform-swiftpackage"
-                artifactId = "io.github.luca992.multiplatform-swiftpackage.gradle.plugin"
+                groupId = "io.github.klememi.multiplatform-swiftpackage"
+                artifactId = "io.github.klememi.multiplatform-swiftpackage.gradle.plugin"
 
                 name.set("Multiplatform Swift Package")
                 description.set("Gradle plugin to generate a Swift.package file and XCFramework to distribute a Kotlin Multiplatform iOS library")
-                url.set(" https://github.com/luca992/multiplatform-swiftpackage")
+                url.set(" https://github.com/klememi/multiplatform-swiftpackage")
 
                 licenses {
                     license {
@@ -89,9 +89,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection.set("scm:git: https://github.com/luca992/multiplatform-swiftpackage.git")
-                    developerConnection.set("scm:git:ssh://github.com/luca992/multiplatform-swiftpackage.git")
-                    url.set(" https://github.com/luca992/multiplatform-swiftpackage")
+                    connection.set("scm:git: https://github.com/klememi/multiplatform-swiftpackage.git")
+                    developerConnection.set("scm:git:ssh://github.com/klememi/multiplatform-swiftpackage.git")
+                    url.set(" https://github.com/klememi/multiplatform-swiftpackage")
                 }
             }
         }
