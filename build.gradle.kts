@@ -11,12 +11,14 @@ apply(plugin = "binary-compatibility-validator")
 
 plugins {
     `kotlin-dsl`
-    `java-gradle-plugin`
-    `maven-publish`
-    signing
+    // `java-gradle-plugin`
+    // `maven-publish`
+    id("com.gradle.plugin-publish") version "1.2.1"
+    // signing
 }
 
 version = "2.3.0"
+group = "io.github.klememi.multiplatform-swiftpackage"
 
 repositories {
     mavenCentral()
@@ -58,65 +60,15 @@ extensions.findByName("buildScan")?.withGroovyBuilder {
 }
 
 gradlePlugin {
+    website = "https://github.com/klememi/multiplatform-swiftpackage"
+    vcsUrl = "https://github.com/klememi/multiplatform-swiftpackage"
     plugins {
         create("pluginMaven") {
             id = "io.github.klememi.multiplatform-swiftpackage"
+            displayName = "KMP Swift Package" 
+            description = "Swift Package creating for KMP" 
+            tags = listOf("kmp", "swift", "spm") 
             implementationClass = "com.chromaticnoise.multiplatformswiftpackage.MultiplatformSwiftPackagePlugin"
         }
-    }
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("pluginMaven") {
-            pom {
-                groupId = "io.github.klememi.multiplatform-swiftpackage"
-                artifactId = "io.github.klememi.multiplatform-swiftpackage.gradle.plugin"
-
-                name.set("Multiplatform Swift Package")
-                description.set("Gradle plugin to generate a Swift.package file and XCFramework to distribute a Kotlin Multiplatform iOS library")
-                url.set(" https://github.com/klememi/multiplatform-swiftpackage")
-
-                licenses {
-                    license {
-                        name.set("Apache License, Version 2.0")
-                        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
-                    }
-                }
-                developers {
-                    developer {
-                        name.set("Georg Dresler")
-                    }
-                }
-                scm {
-                    connection.set("scm:git: https://github.com/klememi/multiplatform-swiftpackage.git")
-                    developerConnection.set("scm:git:ssh://github.com/klememi/multiplatform-swiftpackage.git")
-                    url.set(" https://github.com/klememi/multiplatform-swiftpackage")
-                }
-            }
-        }
-    }
-
-    repositories {
-        maven {
-            val releasesUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-            val snapshotsUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
-            name = "mavencentral"
-            url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotsUrl else releasesUrl)
-            credentials {
-                username = System.getenv("ossrh.username") ?: properties["ossrh.username"].toString()
-                password = System.getenv("ossrh.password") ?: properties["ossrh.password"].toString()
-            }
-        }
-    }
-}
-
-signing {
-    sign(publishing.publications["pluginMaven"])
-}
-
-tasks.javadoc {
-    if (JavaVersion.current().isJava9Compatible) {
-        (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
     }
 }

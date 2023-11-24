@@ -7,7 +7,6 @@ import org.gradle.kotlin.dsl.task
 import org.jetbrains.kotlin.gradle.tasks.FatFrameworkTask
 import java.io.File
 
-
 internal fun getMacosFrameworks(configuration: PluginConfiguration): List<AppleFramework> {
     return configuration.appleTargets.mapNotNull { it.getFramework(configuration.buildConfiguration) }
         .filter {
@@ -107,6 +106,7 @@ internal fun Project.registerCreateUniversalTvosSimulatorFrameworkTask() =
 internal fun removeMonoFrameworksAndAddUniversalFrameworkIfNeeded(
     binFolderPrefix: String,
     buildDir: File,
+    frameworkName: PackageName,
     monoFrameworks: List<AppleFramework>,
     outputFrameworks: MutableList<AppleFramework>
 ) {
@@ -114,15 +114,13 @@ internal fun removeMonoFrameworksAndAddUniversalFrameworkIfNeeded(
         monoFrameworks.forEach { mono ->
             outputFrameworks.removeIf { mono.outputFile == it.outputFile }
         }
-        val configuration = getConfigurationOrThrow()
-        val frameworkName = configuration.packageName
         val buildType = if (monoFrameworks[0].linkTask.name.contains("Release")) "release" else "debug"
         val destinationDir = buildDir.resolve("bin/${binFolderPrefix}Universal/${buildType}Framework")
         val outputFile = AppleFrameworkOutputFile(File(destinationDir, "${frameworkName.value}.framework"))
         outputFrameworks.add(
             AppleFramework(
                 outputFile,
-                frameworkName,
+                AppleFrameworkName(frameworkName.value),
                 AppleFrameworkLinkTask("")
             )
         )
@@ -150,6 +148,7 @@ internal fun Project.registerCreateXCFrameworkTask() = tasks.register("createXCF
     removeMonoFrameworksAndAddUniversalFrameworkIfNeeded(
         "macos",
         buildDir,
+        configuration.packageName,
         macosFrameworks,
         outputFrameworks
     )
@@ -157,6 +156,7 @@ internal fun Project.registerCreateXCFrameworkTask() = tasks.register("createXCF
     removeMonoFrameworksAndAddUniversalFrameworkIfNeeded(
         "iosSimulator",
         buildDir,
+        configuration.packageName,
         iosSimulatorFrameworks,
         outputFrameworks
     )
@@ -164,6 +164,7 @@ internal fun Project.registerCreateXCFrameworkTask() = tasks.register("createXCF
     removeMonoFrameworksAndAddUniversalFrameworkIfNeeded(
         "watchosSimulator",
         buildDir,
+        configuration.packageName,
         watchosSimulatorFrameworks,
         outputFrameworks
     )
@@ -171,6 +172,7 @@ internal fun Project.registerCreateXCFrameworkTask() = tasks.register("createXCF
     removeMonoFrameworksAndAddUniversalFrameworkIfNeeded(
         "tvosSimulator",
         buildDir,
+        configuration.packageName,
         tvosSimulatorFrameworks,
         outputFrameworks
     )
